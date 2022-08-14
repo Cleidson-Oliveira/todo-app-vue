@@ -26,7 +26,9 @@ Instale as dependências:
 
 ```
 yarn
+
 or
+
 npm install
 ```
 
