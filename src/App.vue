@@ -1,49 +1,74 @@
 <template>
-  <div class="app-conteiner">
-    <span>
-      <h1>
-        Todo App
-      </h1>
-    </span>
-    <form @submit.prevent="saveTasks">
-      <input type="text" v-model="taskDescription" placeholder="Qual sua nova tarefa?">
+  <div class="max-w-lg p-4 rounded m-auto bg-purple-700">
+    <h1 class="w-full text-center font-semibold text-2xl text-white">
+      Todo App
+    </h1>
+
+    <form 
+      @submit.prevent="saveTasks"
+      class="flex justify-between w-full pr-2 rounded my-4 bg-gray-100"
+    >
+      <input
+        type="text"
+        placeholder="Qual sua nova tarefa?"
+        v-model="taskDescription"
+        class="w-full p-2 outline-none bg-transparent"
+      >
       <button type="submit">
         <v-icon name="io-add-outline" />
       </button>
     </form>
-    <div class="tasks">
+
+    <div class="flex flex-col gap-2">
       <div>
-        <h2 v-if="tasks[0]">Suas Tarefas</h2>
-        <h2 v-else>Nenhuma tarefa cadastrada</h2>
+        <h2
+          v-if="tasks[0]"
+          class="w-full text-center font-semibold text-lg text-white"
+        >
+          Suas Tarefas
+        </h2>
+        <h2
+          v-else
+          class="w-full text-center font-semibold text-lg text-white"
+        >
+          Nenhuma tarefa cadastrada
+        </h2>
       </div>
-      <div v-for="(task, index) in tasks" class="task">
-        <button @click="() => updateTaskStatus(index)">
-          <v-icon name="fa-regular-check-circle" v-if="task.isCompleted"/>
-          <v-icon name="fa-regular-circle" v-else/>
-        </button>
-        <p>
-          {{task.description}}
-        </p>
-        <button @click="() => deleteTask(index)">
-          <v-icon name="oi-trash" />
-        </button>
-      </div>
+      
+      <Task 
+        v-for="task in tasks"
+        :task="task"
+        @deleteTask="deleteTask(task.id)"
+        @changeStatus="updateTaskStatus(task.id)"
+      />      
     </div>
   </div>
 
 </template>
 
 <script>
+import Task from "./components/task.vue";
+import _ from "lodash";
+
 export default {
   data() {
     return {
       taskDescription: '',
-      tasks: this.getTasks() || [],
+      tasks: [],
     }
   },
+  components: {
+    Task
+  },
+  mounted () {
+    this.tasks = this.getTasks() || [];
+  },
   methods: {
-    updateTaskStatus(index) {
-      this.tasks[index].isCompleted = !this.tasks[index].isCompleted
+    updateTaskStatus(id) {
+      this.tasks = this.tasks.map(task => {
+        return task.id === id ? {...task, isCompleted: !task.isCompleted} : task
+      })
+
       localStorage.setItem("@TodoVue", JSON.stringify(this.tasks))
     },
     getTasks () {
@@ -53,76 +78,16 @@ export default {
     },
     saveTasks () {
       if (this.taskDescription == "") { return }
-      this.tasks.push({description: this.taskDescription, isCompleted: false})
+      this.tasks.push({description: this.taskDescription, isCompleted: false, id: _.uniqueId()})
       localStorage.setItem("@TodoVue", JSON.stringify(this.tasks))
       this.taskDescription = ""
     },
-    deleteTask (index) {
-      this.tasks = this.tasks.filter((_, i) => {
-        return index != i
+    deleteTask (id) {
+      this.tasks = this.tasks.filter((task) => {
+        return task.id != id
       })
       localStorage.setItem("@TodoVue", JSON.stringify(this.tasks))
     }
   },
 }
 </script>
-
-<style scoped>
-
-.app-conteiner {
-  min-width: 350px;
-  padding: 1rem;
-  background-color: #36a1a161;
-  border-radius: .8rem;
-}
-
-form {
-  display: flex;
-  width: 100%;
-  height: 2.5rem;
-  border-radius: .5rem;
-  overflow: hidden;
-}
-
-form input {
-  flex-grow: 10;
-  border: none;
-  padding-left: 1rem;
-  box-sizing: border-box;
-  background-color: #0000001f;
-}
-
-form input:focus-visible {
-  outline: none;
-}
-
-form button {
-  width: unset;
-}
-
-.tasks {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-}
-
-.task {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 2.5rem;
-  border-radius: .5rem;
-  overflow: hidden;
-  background: #0000001f;
-}
-
-.task p {
-  flex-grow: 9;
-}
-
-.task button {
-  height: 100%;
-  width: unset;
-}
-
-</style>
