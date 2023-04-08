@@ -1,7 +1,45 @@
-# Vue 3 + Vite
+# Todo app
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+### Um Todo List simples criado usando Vue 3
 
-## Recommended IDE Setup
+### O app funciona basicamente para:
+- criar e salvar tarefas no localstorage;
+- acessar tarefas salvas previamente e organizar em forma de lista;
+- marcar as tarefas dadas como concluídas; e
+- excluir tarefas.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+### Como testar o projeto?
+
+Faça o clone do repositório:
+
+```
+git clone https://github.com/Cleidson-Oliveira/todo-app-vue.git
+```
+
+Entre na pasta que acabou de ser criada:
+
+```
+cd todo-app-vue
+```
+
+Instale as dependências:
+
+```
+yarn
+
+or
+
+npm install
+```
+
+Rodando o projeto:
+
+```
+yarn dev
+
+or
+
+npm run dev
+```
+
+Com o projeto rodando, acesse [localhost](http://localhost:5173/) para usa-lo.
